@@ -81,3 +81,54 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
+
+
+// 获取数组中的最大值，用于确定数字的最大位数
+int getMax(int arr[], int n) {
+    int mx = arr[0];
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > mx) {
+            mx = arr[i];
+        }
+    }
+    return mx;
+}
+// 基于 exp 表示的特定位进行计数排序
+void countSort(int arr[], int n, int exp) {
+    int* output = new int[n]; 
+    int i, count[10] = { 0 };
+    // 在 count[] 中存储出现的次数
+    for (i = 0; i < n; i++) {
+        count[(arr[i] / exp) % 10]++;
+    }
+    // 更新 count 数组以存储实际位置
+    for (i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+    // 构建输出数组以保持稳定性
+    for (i = n - 1; i >= 0; i--) {
+        output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+        count[(arr[i] / exp) % 10]--;
+    }
+    // 将输出复制回原数组
+    for (i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+    // 释放动态内存以防止内存泄漏
+    delete[] output; 
+}
+// 主基数排序函数
+void radixSort(int arr[], int n) {
+    int m = getMax(arr, n); // 调用 getMax 函数获取最大值
+    // 从最低位到最高位对每个数字进行计数排序
+    for (int exp = 1; m / exp > 0; exp *= 10) {
+        countSort(arr, n, exp);
+    }
+}
+
